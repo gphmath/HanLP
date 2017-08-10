@@ -415,12 +415,15 @@ public abstract class Segment
     public List<Term> seg(String text)
     {
         char[] charArray = text.toCharArray();
+//        System.out.println("charArray = " + charArray[0]+charArray[1]);
         if (HanLP.Config.Normalization)
         {
+            System.out.println("Normalization=True"); //没输出这个
             CharTable.normalization(charArray);
         }
         if (config.threadNumber > 1 && charArray.length > 10000)    // 小文本多线程没意义，反而变慢了
         {
+            System.out.println("多线程"); //没输出这个
             List<String> sentenceList = SentencesUtil.toSentenceList(charArray);
             String[] sentenceArray = new String[sentenceList.size()];
             sentenceList.toArray(sentenceArray);
@@ -500,6 +503,7 @@ public abstract class Segment
 //            return termList;
 //        }
         return segSentence(charArray);
+//        要到具体的segment类下面去找这个方法的实现，segment类只是抽象类
     }
 
     /**

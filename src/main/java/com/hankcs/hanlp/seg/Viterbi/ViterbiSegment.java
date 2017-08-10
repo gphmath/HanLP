@@ -33,9 +33,17 @@ import java.util.List;
  */
 public class ViterbiSegment extends WordBasedGenerativeModelSegment
 {
+    /**
+     *
+     * @param sentence 待分词句子:字符数组，一个元素是一个字
+     * @return
+     */
     @Override
     protected List<Term> segSentence(char[] sentence)
     {
+//        config.displayConfig();
+//        对，调用到这里的segSentence函数
+//        System.out.println("ViterbiSegment.segSentence");
 //        long start = System.currentTimeMillis();
         WordNet wordNetAll = new WordNet(sentence);
         ////////////////生成词网////////////////////
@@ -44,33 +52,41 @@ public class ViterbiSegment extends WordBasedGenerativeModelSegment
 //        System.out.println("构图：" + (System.currentTimeMillis() - start));
         if (HanLP.Config.DEBUG)
         {
+//            System.out.println("DEBUG=True");
             System.out.printf("粗分词网：\n%s\n", wordNetAll);
         }
 //        start = System.currentTimeMillis();
         List<Vertex> vertexList = viterbi(wordNetAll);
 //        System.out.println("最短路：" + (System.currentTimeMillis() - start));
+//        System.out.println("直接用Viterbi算法的粗分结果" + convert(vertexList, false));
 
         if (config.useCustomDictionary)
         {
-            if (config.indexMode)
+//            System.out.println("useCustomDictionary=True");
+            if (config.indexMode){
+                System.out.println("indexMode=T");
                 combineByCustomDictionary(vertexList, wordNetAll);
+
+            }
             else combineByCustomDictionary(vertexList);
         }
 
         if (HanLP.Config.DEBUG)
         {
-            System.out.println("粗分结果" + convert(vertexList, false));
+            System.out.println("用了Viterbi算法结合自定义词典后的粗分结果" + convert(vertexList, false));
         }
 
         // 数字识别
         if (config.numberQuantifierRecognize)
         {
+            System.out.println("数字识别numberQuantifierRecognize=T");
             mergeNumberQuantifier(vertexList, wordNetAll, config);
         }
 
         // 实体命名识别
         if (config.ner)
         {
+//            这个词网是使用了NER的最优词网，vertexList是前面生成的。
             WordNet wordNetOptimum = new WordNet(sentence, vertexList);
             int preSize = wordNetOptimum.size();
             if (config.nameRecognize)

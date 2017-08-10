@@ -41,11 +41,14 @@ public class CustomDictionary
      */
     public static BinTrie<CoreDictionary.Attribute> trie;
     public static DoubleArrayTrie<CoreDictionary.Attribute> dat = new DoubleArrayTrie<CoreDictionary.Attribute>();
-
     // 自动加载词典
     static
     {
         String path[] = HanLP.Config.CustomDictionaryPath;
+        System.out.println("CustomDictionary.static initializer");
+        System.out.println("path[0] = " + path[0]);
+        System.out.println("path[1] = " + path[1]);
+
         long start = System.currentTimeMillis();
         if (!loadMainDictionary(path[0]))
         {
@@ -59,25 +62,44 @@ public class CustomDictionary
 
     private static boolean loadMainDictionary(String mainPath)
     {
+
+        System.out.println("CustomDictionary.loadMainDictionary");
+        System.out.println("mainPath(第一个字典地址) = " + mainPath);
+
         logger.info("自定义词典开始加载:" + mainPath);
-        if (loadDat(mainPath)) return true;
+
+        if (loadDat(mainPath)){
+            System.out.println("loadDat(mainPath) = True");
+            return true;
+        }else {
+            System.out.println("loadDat(mainPath) = False");
+        }
+//        如果第一个自定义词典.bin缓存存在，就是直接返回True，否则是False，继续往下执行。
         dat = new DoubleArrayTrie<CoreDictionary.Attribute>();
         TreeMap<String, CoreDictionary.Attribute> map = new TreeMap<String, CoreDictionary.Attribute>();
         LinkedHashSet<Nature> customNatureCollector = new LinkedHashSet<Nature>();
         try
         {
             String path[] = HanLP.Config.CustomDictionaryPath;
+//            path里是获取了配置文件中指定的每个自定义字典的地址
             for (String p : path)
             {
-                Nature defaultNature = Nature.n;
-                int cut = p.indexOf(' ');
+//                当前地址：
+//                D:/JavaProjects/HanLP/data/dictionary/custom/上海地名.txt ns
+//                D:/JavaProjects/HanLP/data/dictionary/custom/机构名词典.txt
+//                是绝对路径，后面可能带有空格+默认词性，具体怎么生成绝对路径就不要管了
+                System.out.println("p(当前地址) = " + p);
+                Nature defaultNature = Nature.n; // 默认词性为名词n
+                int cut = p.indexOf(' '); //用来隔开，要么没有空格，返回-1，要么有一个，返回位置，0表示第一个字符
                 if (cut > 0)
                 {
                     // 有默认词性
-                    String nature = p.substring(cut + 1);
-                    p = p.substring(0, cut);
+                    String nature = p.substring(cut + 1); //挖掉前cut+1个字符，连空格也挖掉了，剩下词性nr之类的
+                    p = p.substring(0, cut); //地址取不含词性的部分，也不含空格。
+//                    上面两个都不含空格，一个是空格后的词性，一个是空格前的地址
                     try
                     {
+//                        更新默认词性为配置中指定的词性
                         defaultNature = LexiconUtility.convertStringToNature(nature, customNatureCollector);
                     }
                     catch (Exception e)
@@ -296,6 +318,7 @@ public class CustomDictionary
         try
         {
             ByteArray byteArray = ByteArray.createByteArray(path + Predefine.BIN_EXT);
+//            把传入的地址后加上.bin，去读bin缓存文件
             if (byteArray == null) return false;
             int size = byteArray.nextInt();
             if (size < 0)   // 一种兼容措施,当size小于零表示文件头部储存了-size个用户词性

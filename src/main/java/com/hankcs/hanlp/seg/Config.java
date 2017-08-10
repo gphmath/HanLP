@@ -65,11 +65,28 @@ public class Config
      */
     public int threadNumber = 1;
 
+
     /**
      * 更新命名实体识别总开关
      */
     public void updateNerConfig()
     {
         ner = nameRecognize || translatedNameRecognize || japaneseNameRecognize || placeRecognize || organizationRecognize;
+    }
+
+    public void displayConfig(){
+        System.out.println("Config.displayConfig打印参数内容：");
+        System.out.println("indexMode索引分词 = " + indexMode);
+        System.out.println("nameRecognize人名识别 = " + nameRecognize);
+        System.out.println("translatedNameRecognize译名识别 = " + translatedNameRecognize);
+        System.out.println("japaneseNameRecognize日文名识别 = " + japaneseNameRecognize);
+        System.out.println("placeRecognize地点识别 = " + placeRecognize);
+        System.out.println("organizationRecognize机构识别 = " + organizationRecognize);
+        System.out.println("useCustomDictionary使用自定义词典 = " + useCustomDictionary);
+        System.out.println("speechTagging词性标注 = " + speechTagging);
+        System.out.println("ner开启命名实体识别了 = " + ner);
+        System.out.println("offset计算偏移量 = " + offset);
+        System.out.println("numberQuantifierRecognize识别数量词 = " + numberQuantifierRecognize);
+        System.out.println("threadNumber使用的线程数 = " + threadNumber);
     }
 }

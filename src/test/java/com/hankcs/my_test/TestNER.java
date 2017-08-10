@@ -9,7 +9,7 @@
  * This source is subject to the LinrunSpace License. Please contact 上海林原信息科技有限公司 to get more information.
  * </copyright>
  */
-package com.hankcs.demo;
+package com.hankcs.my_test;
 
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
@@ -17,11 +17,12 @@ import com.hankcs.hanlp.seg.common.Term;
 
 import java.util.List;
 
+
 /**
- * 中国人名识别
+ * 命名实体识别测试
  * @author hankcs
  */
-public class DemoChineseNameRecognition
+public class TestNER
 {
     public static void main(String[] args)
     {
@@ -45,7 +46,7 @@ public class DemoChineseNameRecognition
 //            "万科董事长王石与经理郁亮表示，公司目前和碧桂园还有恒大一起合作建造深圳地铁，目前共有10公里，整个项目包括了两个海底隧道",
 
         };
-        Segment segment = HanLP.newSegment().enableNameRecognize(true);
+        Segment segment = HanLP.newSegment().enableNameRecognize(false);
         //        创建初始化的只有Config类对象（所有Segment类都有的成员），里面存放了一些设置：是否开启人名识别地名识别等，线程数等
 
 
@@ -58,5 +59,18 @@ public class DemoChineseNameRecognition
             System.out.println(termList);
         }
 
+        System.out.println("\n\n开启命名实体识别\n\n");
+        Segment segment2 = HanLP.newSegment().enableAllNamedEntityRecognize(true);
+        //        创建初始化的只有Config类对象（所有Segment类都有的成员），里面存放了一些设置：是否开启人名识别地名识别等，线程数等
+
+
+//        HanLP.Config.enableDebug(true);
+        for (String sentence : testCase)
+        {
+            List<Term> termList = segment2.seg(sentence);
+//            Term类里有词语本身，词性还有在句子中的位置，输出时重载了函数toString，所以直接输出为：词语/nr
+//            返回一个list：[区长/n, 庄木弟/nr, 新年/t, 致辞/v]
+            System.out.println(termList);
+        }
     }
 }

@@ -17,10 +17,8 @@ import com.hankcs.hanlp.seg.NShort.Path.AtomNode;
 import com.hankcs.hanlp.utility.MathTools;
 import com.hankcs.hanlp.utility.Predefine;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
+
 import static com.hankcs.hanlp.utility.Predefine.logger;
 
 /**
@@ -30,8 +28,10 @@ public class WordNet
 {
     /**
      * 节点，每一行都是前缀词，跟图的表示方式不同
+     * 这个是List里的元素是LinkedList<Vertex>。。。。
+     * 每个字的位置都有一个链表LinkedList<Vertex>，另外开头和结尾各增加一个只有单个节点的链表
      */
-    private LinkedList<Vertex> vertexes[];
+    private LinkedList<Vertex>[] vertexes;
 
     /**
      * 共有多少个节点
@@ -62,15 +62,25 @@ public class WordNet
 
     public WordNet(char[] charArray)
     {
+//        newB:开始，始##始；newE：结束：末##末
         this.charArray = charArray;
+
         vertexes = new LinkedList[charArray.length + 2];
+//        vertexes = new LinkedList[10];
+//        LinkedList<Vertex>  vertexes = new LinkedList<Vertex>();
+
+//        System.out.println("vertexes.Class = "+vertexes.getClass());
+//        System.out.println("charArray.length + 2 = " + (charArray.length+2));
+//        System.out.println("vertexes.length = " + vertexes.length);
         for (int i = 0; i < vertexes.length; ++i)
         {
             vertexes[i] = new LinkedList<Vertex>();
         }
-        vertexes[0].add(Vertex.newB());
-        vertexes[vertexes.length - 1].add(Vertex.newE());
-        size = 2;
+        vertexes[0].add(Vertex.newB()); // 第一个链表里增加一个开始（始##始）节点。（本来是空的，以后也不会再增加）
+        vertexes[vertexes.length - 1].add(Vertex.newE()); // 最后一个链表里增加一个结束（末##末）节点。（本来是空的，以后也不会再增加）
+        size = 2; //初始的时候，整个句子所有位置的链表里的节点加起来也就两个：始和末
+//        System.out.println("vertexes = " + String.valueOf(vertexes[0]==vertexes.get(0)));
+        System.out.println("vertexes长度"+vertexes.length);
     }
 
     public WordNet(char[] charArray, List<Vertex> vertexList)

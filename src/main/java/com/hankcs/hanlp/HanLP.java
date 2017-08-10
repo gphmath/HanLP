@@ -32,6 +32,7 @@ import sun.reflect.ReflectionFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -183,6 +184,7 @@ public class HanLP
         static
         {
             // 自动读取配置
+//            配置类，里面一个属性，就是默认的Properties?为什么类中是自己类的对象？递归
             Properties p = new Properties();
             try
             {
@@ -191,6 +193,15 @@ public class HanLP
                 {  // IKVM (v.0.44.0.5) doesn't set context classloader
                     loader = HanLP.Config.class.getClassLoader();
                 }
+                System.out.println("Predefine.HANLP_PROPERTIES_PATH == null: "+String.valueOf(Predefine.HANLP_PROPERTIES_PATH == null));
+                if (Predefine.HANLP_PROPERTIES_PATH == null){
+                    InputStream inputStream = loader.getResourceAsStream("hanlp.properties");
+                    p.load(new InputStreamReader(inputStream, "UTF-8"));
+                }else {
+                    FileInputStream inputStream = new FileInputStream(Predefine.HANLP_PROPERTIES_PATH);
+                    p.load(new InputStreamReader(inputStream, "UTF-8"));
+                }
+
                 p.load(new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null ?
                         loader.getResourceAsStream("hanlp.properties") :
                         new FileInputStream(Predefine.HANLP_PROPERTIES_PATH)
@@ -557,6 +568,7 @@ public class HanLP
     public static Segment newSegment()
     {
         return new ViterbiSegment();   // Viterbi分词器是目前效率和效果的最佳平衡
+//        创建初始化的只有Config类对象（所有Segment类都有的成员），里面存放了一些设置：是否开启人名识别地名识别等，线程数等
     }
 
     /**

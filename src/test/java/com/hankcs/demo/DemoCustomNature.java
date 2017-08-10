@@ -39,6 +39,7 @@ public class DemoCustomNature
         System.out.println(pcNature);
         // 我们可以动态添加一个
         pcNature = Nature.create("电脑品牌");
+
         System.out.println(pcNature);
         // 可以将它赋予到某个词语
         LexiconUtility.setAttribute("苹果电脑", pcNature);

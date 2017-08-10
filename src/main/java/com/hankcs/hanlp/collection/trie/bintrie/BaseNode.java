@@ -138,7 +138,7 @@ public abstract class BaseNode<V> implements Comparable<BaseNode>
 
     /**
      * 获取节点的成词状态
-     * @return
+     * @return 状态
      */
     public Status getStatus()
     {
@@ -147,16 +147,18 @@ public abstract class BaseNode<V> implements Comparable<BaseNode>
 
     protected void walk(StringBuilder sb, Set<Map.Entry<String, V>> entrySet)
     {
+
         sb.append(c);
         if (status == Status.WORD_MIDDLE_2 || status == Status.WORD_END_3)
-        {
-            entrySet.add(new TrieEntry(sb.toString(), value));
-        }
+    {
+        entrySet.add(new TrieEntry(sb.toString(), value));
+    }
         if (child == null) return;
         for (BaseNode node : child)
         {
             if (node == null) continue;
             node.walk(new StringBuilder(sb.toString()), entrySet);
+
         }
     }
 

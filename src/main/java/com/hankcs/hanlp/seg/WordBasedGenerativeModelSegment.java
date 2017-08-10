@@ -422,10 +422,13 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
     /**
      * 生成一元词网
      *
-     * @param wordNetStorage
+     * @param wordNetStorage:空白词网（带始末状态）
      */
     protected void GenerateWordNet(final WordNet wordNetStorage)
     {
+
+
+//      在创建空白词网的时候复制了一份char数组到自己的成员
         final char[] charArray = wordNetStorage.charArray;
 
         // 核心词典查询

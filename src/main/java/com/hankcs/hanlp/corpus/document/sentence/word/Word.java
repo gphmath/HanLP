@@ -46,14 +46,18 @@ public class Word implements IWord
      */
     public static Word create(String param)
     {
+//        System.out.println("param = " + param);
         if (param == null) return null;
         int cutIndex = param.lastIndexOf('/');
+//        System.out.println("cutIndex = " + cutIndex);
+//        System.out.println("param.length = " + param.length());
         if (cutIndex <= 0 || cutIndex == param.length() - 1)
         {
             logger.warning("使用 " + param + "创建单个单词失败");
             return null;
         }
-
+//        Word newWord = new Word(param.substring(0, cutIndex), param.substring(cutIndex + 1));
+//        System.out.println(new Word(param.substring(0, cutIndex), param.substring(cutIndex + 1)));
         return new Word(param.substring(0, cutIndex), param.substring(cutIndex + 1));
     }
 

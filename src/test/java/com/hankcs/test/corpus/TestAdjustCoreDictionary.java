@@ -38,7 +38,7 @@ public class TestAdjustCoreDictionary extends TestCase
 
     public void testGetCompiledWordFromDictionary() throws Exception
     {
-        DictionaryMaker dictionaryMaker = DictionaryMaker.load("data/test/CoreNatureDictionary.txt");
+        DictionaryMaker dictionaryMaker = DictionaryMaker.load("data/test/CoreNatureDictionary.mini.txt");
         for (Map.Entry<String, Item> entry : dictionaryMaker.entrySet())
         {
             String word = entry.getKey();

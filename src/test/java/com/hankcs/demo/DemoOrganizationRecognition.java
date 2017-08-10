@@ -29,8 +29,10 @@ public class DemoOrganizationRecognition
                 "我在上海林原科技有限公司兼职工作，",
                 "我经常在台川喜宴餐厅吃饭，",
                 "偶尔去开元地中海影城看电影。",
+                "老百姓大药房的药都很便宜，很适合我们老百姓去买。",
         };
         Segment segment = HanLP.newSegment().enableOrganizationRecognize(true);
+        HanLP.Config.enableDebug(true);
         for (String sentence : testCase)
         {
             List<Term> termList = segment.seg(sentence);

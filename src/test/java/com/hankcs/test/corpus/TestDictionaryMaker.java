@@ -33,11 +33,11 @@ public class TestDictionaryMaker extends TestCase
 {
     public void testSingleDocument() throws Exception
     {
-        Document document = CorpusLoader.convert2Document(new File("data/2014/0101/c1002-23996898.txt"));
+        Document document = CorpusLoader.convert2Document(new File("data/test/199801.txt"));
         DictionaryMaker dictionaryMaker = new DictionaryMaker();
         System.out.println(document);
         addToDictionary(document, dictionaryMaker);
-        dictionaryMaker.saveTxtTo("data/dictionaryTest.txt");
+        dictionaryMaker.saveTxtTo("data/人民日报199801.txt");
     }
 
     private void addToDictionary(Document document, DictionaryMaker dictionaryMaker)

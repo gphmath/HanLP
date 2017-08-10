@@ -95,6 +95,8 @@ public class CompoundWord implements IWord
 
     public static CompoundWord create(String param)
     {
+//        System.out.println("CompoundWord.create");
+//        System.out.println("param = " + param);
         if (param == null) return null;
         int cutIndex = param.lastIndexOf('/');
         if (cutIndex <= 2 || cutIndex == param.length() - 1) return null;
@@ -110,7 +112,9 @@ public class CompoundWord implements IWord
                 return null;
             }
             wordList.add(word);
+//            System.out.println("word.toString = " + word.toString());
         }
+
         String labelParam = param.substring(cutIndex + 1);
         return new CompoundWord(wordList, labelParam);
     }

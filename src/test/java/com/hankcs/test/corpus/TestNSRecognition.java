@@ -13,6 +13,7 @@ package com.hankcs.test.corpus;
 
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Dijkstra.DijkstraSegment;
+import com.hankcs.hanlp.seg.Viterbi.ViterbiSegment;
 import junit.framework.TestCase;
 
 /**
@@ -24,6 +25,7 @@ public class TestNSRecognition extends TestCase
     {
         HanLP.Config.enableDebug();
         DijkstraSegment segment = new DijkstraSegment();
+//        ViterbiSegment segment = new ViterbiSegment();
         segment.enableJapaneseNameRecognize(false);
         segment.enableTranslatedNameRecognize(false);
         segment.enableNameRecognize(false);
