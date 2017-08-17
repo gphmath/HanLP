@@ -22,7 +22,7 @@ import static com.hankcs.hanlp.utility.Predefine.logger;
 
 /**
  * 顶点
- *
+ * hankcs 维特比算法在分词中的应用
  * @author hankcs
  */
 public class Vertex
@@ -33,6 +33,7 @@ public class Vertex
     public String word;
     /**
      * 节点对应的真实词，绝对不含##
+     * 老，或者，老百姓，等等
      */
     public String realWord;
     /**

@@ -12,6 +12,7 @@
 package com.hankcs.hanlp.algorithm;
 
 import com.hankcs.hanlp.corpus.dictionary.item.EnumItem;
+import com.hankcs.hanlp.corpus.tag.NR;
 import com.hankcs.hanlp.corpus.tag.Nature;
 import com.hankcs.hanlp.dictionary.TransformMatrixDictionary;
 import com.hankcs.hanlp.seg.common.Vertex;
@@ -162,7 +163,7 @@ public class Viterbi
     }
 
     /**
-     * 标准版的Viterbi算法，查准率高，效率稍低
+     * 标准版的Viterbi算法，查准率高，效率稍低——这才是正确的Viterbi算法
      *
      * @param roleTagList               观测序列
      * @param transformMatrixDictionary 转移矩阵
@@ -232,34 +233,57 @@ public class Viterbi
     /**
      * 仅仅利用了转移矩阵的“维特比”算法
      *
-     * @param roleTagList               观测序列
-     * @param transformMatrixDictionary 转移矩阵
+     * @param roleTagList               观测序列（也自带了发射矩阵）[  K 1 A 1 ][杨 B 10602 E 268 C 91 D 55 K 5 ][国 C 2368 D 1390 B 51 E 33 L 4 ][福 C 999 D 552 E 34 B 23 K 18 L 2 ][大 C 1262 L 218 K 127 D 52 E 8 M 2 ][药房 A 20833310 ][  A 20833310 ]
+     * @param transformMatrixDictionary 转移矩阵，只用到真正的转移概率矩阵：transititon_probability是一个double[][]的数组。是真实概率的负对数吧。
      * @param <E>                       EnumItem的具体类型
      * @return 预测结果
      */
     public static <E extends Enum<E>> List<E> computeEnumSimply(List<EnumItem<E>> roleTagList, TransformMatrixDictionary<E> transformMatrixDictionary)
     {
+//        用到的数据：
+//        transititon_probability角色转移矩阵：OK
+//        词语.getFrequency(某角色)：词语属于某角色的频数，OK
+//        transformMatrixDictionary中某角色的总频数，应该OK吧。。再检查下？
+        System.out.println("B到C的转移概率 = " + transformMatrixDictionary.transititon_probability[NR.B.ordinal()][NR.C.ordinal()]);
+        System.out.println("B到A的转移概率 = " + transformMatrixDictionary.transititon_probability[NR.B.ordinal()][NR.A.ordinal()]);
+//        nr.tr.txt的左边第一列是出发节点，上面第一行是到达节点，目测是概率的负对数（待确认）
         int length = roleTagList.size() - 1;
-        List<E> tagList = new LinkedList<E>();
+//        减一是因为第一个始的角色作者认为不用计算，直接取为K。始，杨，国，福，大，药房，末，共7个元素，去掉“始”，length=6
+        System.out.println("length = " + length);
+        List<E> tagList = new LinkedList<E>(); //初始化要返回的角色列表
         Iterator<EnumItem<E>> iterator = roleTagList.iterator();
         EnumItem<E> start = iterator.next();
+        System.out.println("start = " + start);
+//        start = K 1 A 1
         E pre = start.labelMap.entrySet().iterator().next().getKey();
         E perfect_tag = pre;
-        // 第一个是确定的
+        System.out.println("perfect_tag = " + perfect_tag);
+        // 第一个是确定的，指的是始##始。为什么不能是A？一开始不是标注为始[K 1 A 1 ]的吗？,好吧暂时无视，反正第一个字标注为人名上文。
         tagList.add(pre);
+//        已经把这个【始，K】添加到角色列表的第一个位置
         for (int i = 0; i < length; ++i)
         {
             double perfect_cost = Double.MAX_VALUE;
             EnumItem<E> item = iterator.next();
+//          当前item = [杨 B 10602 E 268 C 91 D 55 K 5 ]
             for (E cur : item.labelMap.keySet())
             {
+//                遍历当前词语所有可能词性，选一个乘上去之后概率最大的，
+// 但这不是真正的Viterbi算法！！！真正的Viterbi是全局最大概率路径，而这只是每一步选最大概率，全局不一定最大
+//                cur依次=B，E,C,D,K
+//                item.getFrequency(cur),当前词语属于当前角色的频数
+//                transformMatrixDictionary.getTotalFrequency(cur)，当前角色的总频数
+//                前者除以后者，表示当前角色能发射到当前的概率——这就是发射概率
+//                下式=-log[ P_tran(s0->s1) * P_emit(s1->o1) ]
                 double now = transformMatrixDictionary.transititon_probability[pre.ordinal()][cur.ordinal()] - Math.log((item.getFrequency(cur) + 1e-8) / transformMatrixDictionary.getTotalFrequency(cur));
                 if (perfect_cost > now)
                 {
+//                    如果有负对数更小的（即概率更大的路径），就更新，选出这一步概率最大（不是全局最大）的路径
                     perfect_cost = now;
                     perfect_tag = cur;
                 }
             }
+//            继续下一步
             pre = perfect_tag;
             tagList.add(pre);
         }

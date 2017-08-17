@@ -83,6 +83,20 @@ public class WordNet
         System.out.println("vertexes长度"+vertexes.length);
     }
 
+    /**
+     * 根据原文字符串和已生成的词语链表[Vertex]，反演出一个精简版的词网。
+     * @param charArray：[老，百，姓，大，药，房]
+     * @param vertexList：[老百姓，大，药房]
+     * @return WordNetOptimum:
+     * 【始##始】
+     * 【老百姓】
+     * 【】
+     * 【】
+     * 【大】
+     * 【药房】
+     * 【】
+     * 【末##末】
+     */
     public WordNet(char[] charArray, List<Vertex> vertexList)
     {
         this.charArray = charArray;
@@ -102,7 +116,8 @@ public class WordNet
 
     /**
      * 添加顶点
-     *
+     * 第一行：【老，老百姓】
+     * 如果第一行要加一个顶点，由于都是从同一个字“老”开始，所以只要长度相等，就是重复节点。比如只能加：老百，老百姓大，等词语。
      * @param line   行号
      * @param vertex 顶点
      */
@@ -142,25 +157,29 @@ public class WordNet
     /**
      * 添加顶点，同时检查此顶点是否悬孤，如果悬孤则自动补全
      *
-     * @param line
-     * @param vertex
+     * @param line：就是offset，以第几个字开头的vertex列表——词网中的第几行——始##始是第0行
+     * @param vertex：要插入的Vertex
      * @param wordNetAll 这是一个完全的词图
      */
     public void insert(int line, Vertex vertex, WordNet wordNetAll)
     {
         for (Vertex oldVertex : vertexes[line])
         {
-            // 保证唯一性
+            // 保证唯一性，长度一样说明是同一个词已经有了，不用添加了，直接返回。
             if (oldVertex.realWord.length() == vertex.realWord.length()) return;
         }
+//        已知行数添加很方便，关键是后面的保持连通
         vertexes[line].add(vertex);
         ++size;
+
         // 保证连接
         for (int l = line - 1; l > 1; --l)
         {
             if (get(l, 1) == null)
             {
+//            get(line,length)：获取第line行长度为length的节点
                 Vertex first = wordNetAll.getFirst(l);
+//                getFirst(line)：获取第line行的第一个节点Vertex
                 if (first == null) break;
                 vertexes[l].add(first);
                 ++size;
@@ -176,6 +195,7 @@ public class WordNet
         if (get(l).size() == 0)
         {
             List<Vertex> targetLine = wordNetAll.get(l);
+//            get(line):获取第line行的所有节点
             if (targetLine == null || targetLine.size() == 0) return;
             vertexes[l].addAll(targetLine);
             size += targetLine.size();
@@ -186,6 +206,7 @@ public class WordNet
             if (get(l).size() == 0)
             {
                 Vertex first = wordNetAll.getFirst(l);
+                //            get(line):获取第line行的所有节点
                 if (first == null) break;
                 vertexes[l].add(first);
                 ++size;

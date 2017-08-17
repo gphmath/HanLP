@@ -234,9 +234,15 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
      */
     protected static List<Term> convert(List<Vertex> vertexList, boolean offsetEnabled)
     {
+//        无offset的情况很简单。
+//        首先一个Vertex转Term很简单——(Vertex.realName,Vertex.guessNature)就是一个Term=（词，词性）了
+//        而Term的重载了toString函数，直接输出：词/词性
+//        那把Vertex的列表转换Term的列表也是一一对应地转就行了。——无非就是用了迭代器而不是下标来增加效率
+//        Term:代表一个词：包含了一个词的文本、词性，在句子中的位置等信息
         assert vertexList != null;
         assert vertexList.size() >= 2 : "这条路径不应当短于2" + vertexList.toString();
         int length = vertexList.size() - 2;
+//        真正的长度，要去掉头部的始##始和尾部的末##末
         List<Term> resultList = new ArrayList<Term>(length);
         Iterator<Vertex> iterator = vertexList.iterator();
         iterator.next();
@@ -258,6 +264,7 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
             {
                 Vertex vertex = iterator.next();
                 Term term = convert(vertex);
+//                这个convert就是直接生成一个Term，初始化给定Vertex的词语和词性：return new Term(vertex.realWord, vertex.guessNature())
                 resultList.add(term);
             }
         }
@@ -421,6 +428,20 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
 
     /**
      * 生成一元词网
+     * 不知道为什么叫一元词网，但是是这样的：
+     * 王是一个Vertex，王石也是一个Vertex
+     1. 【始##始】
+     2. 【王，王石】
+     3. 【石】
+     4. 【今，今天】
+     5. 【天】
+     6. 【去】
+     7. 【参，参观】
+     8. 【观】
+     9. 【了】
+     10. 【深，深圳】
+     11. 【圳】
+     12. 【末##末】
      *
      * @param wordNetStorage:空白词网（带始末状态）
      */
@@ -432,9 +453,25 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
         final char[] charArray = wordNetStorage.charArray;
 
         // 核心词典查询
+        System.out.println("charArray = " + charArray[0]+"..."+charArray[charArray.length-1]);
         DoubleArrayTrie<CoreDictionary.Attribute>.Searcher searcher = CoreDictionary.trie.getSearcher(charArray, 0);
+//        getSearcher = new Searcher(offset, text) = new Searcher(offset=0, text="老百姓大药房")
+//       对句子老百姓大药房，的每个字都查一下以此开头的词语，
         while (searcher.next())
         {
+//            添加节点，输入行号，输入要加的节点Vertex对象
+            String newString = new String(charArray, searcher.begin, searcher.length);
+//            System.out.println("newString = " + newString);
+            System.out.println("newVertex = " + new Vertex(newString, searcher.value, searcher.index).toString());
+//            输出所有newString如下：新添加的节点的realWord也是一样
+//            newString = 老
+//            newString = 老百姓
+//            newString = 百姓
+//            newString = 姓
+//            newString = 大
+//            newString = 药
+//            newString = 药房
+//            newString = 房
             wordNetStorage.add(searcher.begin + 1, new Vertex(new String(charArray, searcher.begin, searcher.length), searcher.value, searcher.index));
         }
         // 用户词典查询
@@ -447,15 +484,20 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
 //            }
 //        }
         // 原子分词，保证图连通
+//        上面已经包含了大部分情况。下面只是针对某些情况下，词网不连通，需要补一补
         LinkedList<Vertex>[] vertexes = wordNetStorage.getVertexes();
         for (int i = 1; i < vertexes.length; )
         {
+//            略过始和末，只判断正文
             if (vertexes[i].isEmpty())
             {
+//              vertexes[1] = 【Vertex(老)，Vertex(老百姓)】
+//              如果某个位置没有一个Vertex的话，需要更新
                 int j = i + 1;
                 for (; j < vertexes.length - 1; ++j)
                 {
                     if (!vertexes[j].isEmpty()) break;
+//                    如果i位置没有组词Vertex，就继续往下找，找到第一个有词组的位置，可能就是下一个
                 }
                 wordNetStorage.add(i, quickAtomSegment(charArray, i - 1, j - 1));
                 i = j;

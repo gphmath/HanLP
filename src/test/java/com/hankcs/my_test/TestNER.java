@@ -41,12 +41,13 @@ public class TestNER
 //                "龚学平等领导说,邓颖超生前杜绝超生",
 //                "金三胖是中国一拖集团有限责任公司的董事长",
 //            "据记者尹同飞报道，是融创董事长李石与王石关于宝能系和华润集团准备正式签约的时间，但戏剧性一幕出现了，",
-            "过去一周出现了彩虹",
-            "他去了北一环路" ,
+//            "过去一周出现了彩虹",
+            "杨国福大药房",
+//            "他去了北一环路" ,
 //            "万科董事长王石与经理郁亮表示，公司目前和碧桂园还有恒大一起合作建造深圳地铁，目前共有10公里，整个项目包括了两个海底隧道",
 
         };
-        Segment segment = HanLP.newSegment().enableNameRecognize(false);
+        Segment segment = HanLP.newSegment().enableNameRecognize(true);
         //        创建初始化的只有Config类对象（所有Segment类都有的成员），里面存放了一些设置：是否开启人名识别地名识别等，线程数等
 
 
@@ -59,18 +60,18 @@ public class TestNER
             System.out.println(termList);
         }
 
-        System.out.println("\n\n开启命名实体识别\n\n");
-        Segment segment2 = HanLP.newSegment().enableAllNamedEntityRecognize(true);
-        //        创建初始化的只有Config类对象（所有Segment类都有的成员），里面存放了一些设置：是否开启人名识别地名识别等，线程数等
-
-
-//        HanLP.Config.enableDebug(true);
-        for (String sentence : testCase)
-        {
-            List<Term> termList = segment2.seg(sentence);
-//            Term类里有词语本身，词性还有在句子中的位置，输出时重载了函数toString，所以直接输出为：词语/nr
-//            返回一个list：[区长/n, 庄木弟/nr, 新年/t, 致辞/v]
-            System.out.println(termList);
-        }
+//        System.out.println("\n\n开启命名实体识别\n\n");
+//        Segment segment2 = HanLP.newSegment().enableAllNamedEntityRecognize(true);
+//        //        创建初始化的只有Config类对象（所有Segment类都有的成员），里面存放了一些设置：是否开启人名识别地名识别等，线程数等
+//
+//
+////        HanLP.Config.enableDebug(true);
+//        for (String sentence : testCase)
+//        {
+//            List<Term> termList = segment2.seg(sentence);
+////            Term类里有词语本身，词性还有在句子中的位置，输出时重载了函数toString，所以直接输出为：词语/nr
+////            返回一个list：[区长/n, 庄木弟/nr, 新年/t, 致辞/v]
+//            System.out.println(termList);
+//        }
     }
 }

@@ -31,7 +31,7 @@ public enum NRPattern
     EG,
     BXD,
     BZ,
-//    CD,
+//    CD, //效果不好，所以去掉？？
     EE,
     FE,
     FC,

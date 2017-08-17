@@ -17,13 +17,13 @@ import com.hankcs.hanlp.seg.common.Vertex;
 import com.hankcs.hanlp.utility.Predefine;
 
 /**
- * 原子分词节点
+ * 原子分词节点，类似Vertex但更简洁
  * @author hankcs
  */
 public class AtomNode
 {
     public String sWord;
-    public int nPOS;
+    public int nPOS;  // 词性的编号，代替词性的字符串
 
     public AtomNode(String sWord, int nPOS)
     {

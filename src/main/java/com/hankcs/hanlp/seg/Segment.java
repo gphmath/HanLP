@@ -149,6 +149,7 @@ public abstract class Segment
 
     /**
      * 快速原子分词，希望用这个方法替换掉原来缓慢的方法
+     * AtomNode：一个词和词性的节点，类似Vertex？
      *
      * @param charArray
      * @param start

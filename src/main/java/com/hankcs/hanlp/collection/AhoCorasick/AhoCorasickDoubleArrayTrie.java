@@ -40,6 +40,11 @@ public class AhoCorasickDoubleArrayTrie<V>
      * fail表
      */
     int fail[];
+
+    public int[][] getOutput() {
+        return output;
+    }
+
     /**
      * 输出表
      */
@@ -83,22 +88,71 @@ public class AhoCorasickDoubleArrayTrie<V>
     /**
      * 处理文本
      *
-     * @param text      文本
+     * @param text      文本——往往是角色标注序列：pattern=KBCDLKA：龚学平等领导——的角色标注序列
      * @param processor 处理器
+     * 其中hit是可替换的零件函数
+     * V=NRPattern:匹配模式：包含了BBCD,BCD,BE,FB,等等
      */
     public void parseText(String text, IHit<V> processor)
     {
+        System.out.println("output[0] = " + output[0]);
+        System.out.println("output[1] = " + output[1]);
+        System.out.println("output[68] = " + output[68]);
+        System.out.println("output[74] = " + output[74]);
+        System.out.println("output[152] = " + output[152]);
+
+        for (int i=0;i<output.length;i++){
+            if(output[i]!=null){
+                for(int j=0;j<output[i].length;j++) {
+                    System.out.println("output["+i+"]["+j+"] = " + output[i][j]);
+                }
+            }
+        }
+        for (int i=0;i<base.length;i++){
+            if (base[i]!=0) {
+                System.out.println("base["+i+"] = " + base[i]);
+            }
+        }
+        for (int i=0;i<fail.length;i++){
+            if (fail[i]!=0) {
+                System.out.println("fail["+i+"] = " + fail[i]);
+            }
+        }
+
+
         int position = 1;
         int currentState = 0;
         for (int i = 0; i < text.length(); ++i)
         {
+//            遍历角色标注序列
+
+            System.out.println("转移前State = " + currentState);
+            System.out.println("text.charAt(i) = " + text.charAt(i));
             currentState = getState(currentState, text.charAt(i));
+            System.out.println("转移后State = " + currentState);
             int[] hitArray = output[currentState];
             if (hitArray != null)
             {
+                System.out.println("该状态属于可接受状态 = " + currentState);
+
                 for (int hit : hitArray)
                 {
+//                    这个hit
+                    System.out.println("hit = " + hit);
+                    System.out.println("v[hit].toString() = " + v[hit].toString());
+                    System.out.println("l[hit].toString() = " + l[hit]);
+//                    hit = 3
+//                    v[hit].toString() = BC
+//                    l[hit].toString() = 2
+//                    识别出人名：邓颖 BC
+//                    hit = 4
+//                    v[hit].toString() = BCD
+//                    l[hit].toString() = 3
+//                    识别出人名：邓颖超 BCD
+
                     processor.hit(position - l[hit], position, v[hit]);
+//                    参数：begin、end、NRPattern
+//                    v[hit]=BC（即邓颖）、BCD（邓颖超）
                 }
             }
             ++position;
@@ -215,6 +269,8 @@ public class AhoCorasickDoubleArrayTrie<V>
      */
     public void load(ObjectInputStream in, V[] value) throws IOException, ClassNotFoundException
     {
+        System.out.println("AhoCorasickDoubleArrayTrie.load");
+        System.out.println("in = [" + in + "], value = [" + value[0] + "]");
         base = (int[]) in.readObject();
         check = (int[]) in.readObject();
         fail = (int[]) in.readObject();
@@ -232,6 +288,8 @@ public class AhoCorasickDoubleArrayTrie<V>
      */
     public boolean load(ByteArray byteArray, V[] value)
     {
+        System.out.println("AhoCorasickDoubleArrayTrie.load");
+        System.out.println("byteArray = [" + byteArray + "], value = [" + value[0] + "]");
         if (byteArray == null) return false;
         size = byteArray.nextInt();
         base = new int[size + 65535];   // 多留一些，防止越界
@@ -375,6 +433,14 @@ public class AhoCorasickDoubleArrayTrie<V>
     /**
      * 转移状态，支持failure转移
      *
+     * 确定有限状态自动机（DFA）是这样的：
+     * 转移函数delta(qi,xi)=q_{i+1}
+     * qi是有限大小的状态集Q中的一个状态，当前i时刻的状态。
+     * xi是当前输入的字符——是我们要研究的对象，可以是数组也可以是字符串等，而状态相当于分类，可能很少，而且是事先确定的几个状态。
+     * 有个函数delta，可以是用转移矩阵表示，给定当前的状态q和当前的输入x，这个函数就会给出下一步的状态
+     * 就这样有一个输入x（数字或字符），就会更新下一步状态，
+     * 直到输入结束，那我们看最后一个状态，如果属于一个状态子集F（Q的某个子集），就接收这个状态——就是返回true，否则返回false
+     *
      * @param currentState
      * @param character
      * @return
@@ -435,11 +501,17 @@ public class AhoCorasickDoubleArrayTrie<V>
      * c转移，如果是根节点则返回自己
      *
      * @param nodePos
-     * @param c
+     * @param c: KBCDLKA
      * @return
      */
     protected int transitionWithRoot(int nodePos, char c)
     {
+        System.out.println("AhoCorasickDoubleArrayTrie.transitionWithRoot");
+        System.out.println("nodePos = [" + nodePos + "], c = [" + c + "]");
+        System.out.println("base.length = " + base.length);
+
+
+
         int b = base[nodePos];
         int p;
 

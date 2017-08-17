@@ -50,7 +50,7 @@ public class TransformMatrixDictionary<E extends Enum<E>>
     int total[];
 
     /**
-     * 所有标签出现的总次数
+     * 所有标签出现的总次数，这里的frequency都是指频数
      */
     int totalFrequency;
 

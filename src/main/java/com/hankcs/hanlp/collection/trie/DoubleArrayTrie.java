@@ -1127,11 +1127,12 @@ public class DoubleArrayTrie<V> implements Serializable, ITrie<V>
         /**
          * 构造一个双数组搜索工具
          *
-         * @param offset    搜索的起始位置
-         * @param charArray 搜索的目标字符数组
+         * @param offset    搜索的起始位置：0等
+         * @param charArray 搜索的目标字符数组:[老,百,姓,大,药,房]
          */
         public Searcher(int offset, char[] charArray)
         {
+//
             this.charArray = charArray;
             i = offset;
             last = base[0];
