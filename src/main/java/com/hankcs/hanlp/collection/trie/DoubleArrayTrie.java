@@ -554,6 +554,8 @@ public class DoubleArrayTrie<V> implements Serializable, ITrie<V>
      */
     private boolean loadBaseAndCheck(String path)
     {
+        System.out.println("DoubleArrayTrie.loadBaseAndCheck");
+        System.out.println("path = [" + path + "]");
         try
         {
             DataInputStream in = new DataInputStream(new BufferedInputStream(IOAdapter == null ?
@@ -1028,21 +1030,36 @@ public class DoubleArrayTrie<V> implements Serializable, ITrie<V>
      * 沿着路径转移状态
      *
      * @param path 路径
-     * @param from 起点（根起点为base[0]=1）
+     * @param from 起点（根起点为base[0]=1）:base[节点编号]=hash地址之类的
      * @return 转移后的状态（双数组下标）
      */
     public int transition(String path, int from)
     {
+        System.out.println("DoubleArrayTrie.transition");
+        System.out.println("path = [" + path + "], from = [" + from + "]");
+//        path=老百姓、大、药房。。。是最佳路径中的一个个词语文本
         int b = from;
+//        b记录当前节点编号还是base？应该是地址base值
         int p;
 
         for (int i = 0; i < path.length(); ++i)
         {
             p = b + (int) (path.charAt(i)) + 1;
-            if (b == check[p])
+            System.out.println("b = " + b+",  c="+path.charAt(i)+"="+(int) (path.charAt(i))+"; p=b+c+1="+p);
+            System.out.println("base["+p+"] = " + base[p]);
+            System.out.println("check["+p+"] = " + check[p]);
+//
+//            加1是为了与null节点区分开，每一层节点如果有一个词结束了，那么第一个字是空=null！！！噢，表示有一个词结束了。
+//            p=base[s]+(int)c=t节点编号
+            if (b == check[p]) {
+//                如果p的前一个节点的base是b，则p的地址赋值为b，噢轮换，方便继续以b为from的地址，去取下一个节点
+//                如果每次都找对的话，-老-百-姓：返回“姓”转移到的节点的base
                 b = base[p];
-            else
+            }else {
+//                如果p的前一个节点的base不是b，那么就是刚计算出来的这个地址已经被分配了
+//                为什么不是重新找base？而是直接返回-1了？
                 return -1;
+            }
         }
 
         p = b;
@@ -1079,6 +1096,7 @@ public class DoubleArrayTrie<V> implements Serializable, ITrie<V>
     {
         if (state < 0) return null;
         int n = base[state];
+//
         if (state == check[state] && n < 0)
         {
             return v[-n - 1];
@@ -1205,9 +1223,9 @@ public class DoubleArrayTrie<V> implements Serializable, ITrie<V>
     /**
      * 转移状态
      *
-     * @param current
-     * @param c
-     * @return
+     * @param current:当前节点的编号
+     * @param c：当前输入的字符：计算时转为相应的ASCII码的10进制：A=65,a=97
+     * @return 转移后的节点地址
      */
     protected int transition(int current, char c)
     {
@@ -1215,6 +1233,8 @@ public class DoubleArrayTrie<V> implements Serializable, ITrie<V>
         int p;
 
         p = b + c + 1;
+//        +1，跳过空节点
+//        t=base[s]+c:这个t是下一个节点的地址也可以作为base的指标？
         if (b == check[p])
             b = base[p];
         else

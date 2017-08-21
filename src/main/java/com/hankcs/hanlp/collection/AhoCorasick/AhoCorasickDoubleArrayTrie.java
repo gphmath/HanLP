@@ -95,11 +95,11 @@ public class AhoCorasickDoubleArrayTrie<V>
      */
     public void parseText(String text, IHit<V> processor)
     {
-        System.out.println("output[0] = " + output[0]);
-        System.out.println("output[1] = " + output[1]);
-        System.out.println("output[68] = " + output[68]);
-        System.out.println("output[74] = " + output[74]);
-        System.out.println("output[152] = " + output[152]);
+//        System.out.println("output[0] = " + output[0]);
+//        System.out.println("output[1] = " + output[1]);
+//        System.out.println("output[68] = " + output[68]);
+//        System.out.println("output[74] = " + output[74]);
+//        System.out.println("output[152] = " + output[152]);
 
         for (int i=0;i<output.length;i++){
             if(output[i]!=null){
@@ -111,6 +111,11 @@ public class AhoCorasickDoubleArrayTrie<V>
         for (int i=0;i<base.length;i++){
             if (base[i]!=0) {
                 System.out.println("base["+i+"] = " + base[i]);
+            }
+        }
+        for (int i=0;i<check.length;i++){
+            if (check[i]!=0) {
+                System.out.println("check["+i+"] = " + check[i]);
             }
         }
         for (int i=0;i<fail.length;i++){

@@ -146,6 +146,7 @@ public class TransformMatrixDictionary<E extends Enum<E>>
                 {
                     double frequency = matrix[from][to] + 1e-8;
                     transititon_probability[from][to] = -Math.log(frequency / total[from]);
+//                    ？？？？？为什么不是除以每个状态发出的总次数，而是要把发出次数和转到次数加起来作为分母？？？Python里我直接除以发出总次数了
 //                    System.out.println("from" + NR.values()[from] + " to" + NR.values()[to] + " = " + transititon_probability[from][to]);
                 }
             }

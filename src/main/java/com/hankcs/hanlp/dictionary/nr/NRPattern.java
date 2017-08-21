@@ -18,6 +18,10 @@ package com.hankcs.hanlp.dictionary.nr;
  */
 public enum NRPattern
 {
+//    BCD,
+//    BE,
+//    FB,
+//
     BBCD,
     BBE,
     BBZ,

@@ -141,7 +141,7 @@ public class PersonRecognition
                         // 有些双名实际上可以构成更长的三名
                         if (vertex.getAttribute().totalFrequency <= 1000 && vertex.realWord.length() == 2)
                         {
-//                            词性是人名的，但总频数<=1000,不常用的双字词，词性设为X（姓与双名首字成词）和G（人名后缀）
+//                            词性是人名的，但该词的总频数<=1000,不常用的双字词，词性设为X（姓与双名首字成词）和G（人名后缀）
                             nrEnumItem = new EnumItem<NR>(NR.X, NR.G);
                         }
 //                        词性是人名，但不符上面的条件，就设为A，其他非人名相关角色，频数设为：人名角色转移矩阵中A出现的总频数

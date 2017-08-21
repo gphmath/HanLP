@@ -72,9 +72,11 @@ public class Vertex
 
     public void updateFrom(Vertex from)
     {
+//        计算两个词之间的距离：weight
         double weight = from.weight + MathTools.calculateWeight(from, this);
         if (this.from == null || this.weight > weight)
         {
+//            如果比当前距离小，就更新一下
             this.from = from;
             this.weight = weight;
         }

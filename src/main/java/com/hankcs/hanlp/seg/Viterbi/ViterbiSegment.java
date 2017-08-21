@@ -78,7 +78,7 @@ public class ViterbiSegment extends WordBasedGenerativeModelSegment
 //        System.out.println("最短路：" + (System.currentTimeMillis() - start));
 //        System.out.println("直接用Viterbi算法的粗分结果" + convert(vertexList, false));
         System.out.println("用了Viterbi算法的粗分结果" + convert(vertexList, false));
-        config.useCustomDictionary=false;
+//        config.useCustomDictionary=false;
         if (config.useCustomDictionary)
         {
 //            System.out.println("useCustomDictionary=True");

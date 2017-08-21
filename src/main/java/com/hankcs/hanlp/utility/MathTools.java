@@ -33,11 +33,17 @@ public class MathTools
         int frequency = from.getAttribute().totalFrequency;
         if (frequency == 0)
         {
+//            如果这个词在核心词典中没有，就当做频数为1
             frequency = 1;  // 防止发生除零错误
         }
 //        int nTwoWordsFreq = BiGramDictionary.getBiFrequency(from.word, to.word);
         int nTwoWordsFreq = CoreBiGramTableDictionary.getBiFrequency(from.wordID, to.wordID);
         double value = -Math.log(dSmoothingPara * frequency / (MAX_FREQUENCY) + (1 - dSmoothingPara) * ((1 - dTemp) * nTwoWordsFreq / frequency + dTemp));
+//        MAX_FREQUENCY:总词频25146057
+//        dTemp:平滑因子：1/(总词频+0.00001)
+//        t*词的频数/总词频25146057  + （1-t）*  [(1-temp)*转移频数(from->to)/词的频数  + temp ]
+//        tmp约等于0，就当做0，t=0.1
+//        0.1 * F(from)/F总  + 0.9 * F转移(from->to)/F(from)
         if (value < 0.0)
         {
             value = -value;

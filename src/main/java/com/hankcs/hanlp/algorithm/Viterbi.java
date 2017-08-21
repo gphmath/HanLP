@@ -243,7 +243,7 @@ public class Viterbi
 //        用到的数据：
 //        transititon_probability角色转移矩阵：OK
 //        词语.getFrequency(某角色)：词语属于某角色的频数，OK
-//        transformMatrixDictionary中某角色的总频数，应该OK吧。。再检查下？
+//        transformMatrixDictionary中某角色的总频数。首先需要转移频数矩阵OK，然后对于某个角色，计算它转出和转入的次数总和。所以有转移频数矩阵就行了，这是nr.tr.txt里的
         System.out.println("B到C的转移概率 = " + transformMatrixDictionary.transititon_probability[NR.B.ordinal()][NR.C.ordinal()]);
         System.out.println("B到A的转移概率 = " + transformMatrixDictionary.transititon_probability[NR.B.ordinal()][NR.A.ordinal()]);
 //        nr.tr.txt的左边第一列是出发节点，上面第一行是到达节点，目测是概率的负对数（待确认）

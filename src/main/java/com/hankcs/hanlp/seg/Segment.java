@@ -189,19 +189,22 @@ public abstract class Segment
 
     /**
      * 使用用户词典合并粗分结果
-     * @param vertexList 粗分结果
+     * @param vertexList 粗分结果：原来的最佳路径
      * @return 合并后的结果
      */
     protected static List<Vertex> combineByCustomDictionary(List<Vertex> vertexList)
     {
         Vertex[] wordNet = new Vertex[vertexList.size()];
         vertexList.toArray(wordNet);
+//        又是复制，把vertexList复制到wordNet
+
         // DAT合并
         DoubleArrayTrie<CoreDictionary.Attribute> dat = CustomDictionary.dat;
         for (int i = 0; i < wordNet.length; ++i)
         {
-            int state = 1;
+            int state = 1; //base[0]=1，1是根节点的base值
             state = dat.transition(wordNet[i].realWord, state);
+//            返回root-老-百-姓-转移到的节点的base，失败的话就是-1.为什么会失败？
             if (state > 0)
             {
                 int to = i + 1;
@@ -225,6 +228,7 @@ public abstract class Segment
                 }
             }
         }
+
         // BinTrie合并
         if (CustomDictionary.trie != null)
         {
